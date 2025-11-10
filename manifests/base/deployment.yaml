@@ -16,16 +16,9 @@ spec:
       labels:
         app.kubernetes.io/instance: gpt-oss-app
     spec:
-      terminationGracePeriodSeconds: 30
-      nodeSelector:
-        nvidia.com/gpu.present: "true"
-      securityContext:
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
       containers:
       - name: vllm
-        image: vllm/vllm-openai:gptoss
+        image: quay.io/redhat-ai-dev/vllm-openai-ubi9:v0.11.0
         imagePullPolicy: IfNotPresent
         env:
         - name: HF_TOKEN
@@ -33,14 +26,6 @@ spec:
             secretKeyRef:
               name: huggingface-token
               key: token
-        - name: HF_HOME
-          value: /.cache/huggingface
-        - name: TRANSFORMERS_CACHE
-          value: /.cache/transformers
-        - name: FLASHINFER_WORKSPACE_DIR
-          value: /.cache/flashinfer
-        - name: XDG_CACHE_HOME
-          value: /.cache/.cache
         args:
         - "--model=openai/gpt-oss-20b"
         - "--host=0.0.0.0"
@@ -50,14 +35,25 @@ spec:
         - "--gpu-memory-utilization=0.95"
         ports:
         - containerPort: 8080
-          name: http
+        securityContext:
+          runAsNonRoot: true
+        volumeMounts:
+          - name: dshm
+            mountPath: /dev/shm
+          - name: models-cache
+            mountPath: /models-cache
         resources:
           limits:
             nvidia.com/gpu: "1"
-        volumeMounts:
-          - name: cache
-            mountPath: /.cache
       volumes:
-      - name: cache
-        emptyDir:
-          sizeLimit: 10Gi
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: "2Gi"
+        - name: models-cache
+          persistentVolumeClaim:
+            claimName: gpt-oss-pvc
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
