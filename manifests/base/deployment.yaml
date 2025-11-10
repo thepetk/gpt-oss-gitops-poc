@@ -35,6 +35,10 @@ spec:
               key: token
         - name: HF_HOME
           value: /models
+        - name: XDG_CACHE_HOME
+          value: /models/.cache
+        - name: TORCH_HOME
+          value: /models/.torch
         - name: FLASHINFER_WORKSPACE_DIR
           value: /models/.flashinfer
         args:
