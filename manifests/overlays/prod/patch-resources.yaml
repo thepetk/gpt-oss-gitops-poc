@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gpt-oss-app
+  namespace: gpt-oss
   labels:
     app.kubernetes.io/instance: gpt-oss-app
 spec:
