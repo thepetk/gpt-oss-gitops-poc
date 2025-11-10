@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   volumeModes: Filesystem
   resources:
     requests:
