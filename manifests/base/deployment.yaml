@@ -56,4 +56,4 @@ spec:
       volumes:
       - name: models
         persistentVolumeClaim:
-          claimName: models-cache
+          claimName: gpt-oss-pvc
