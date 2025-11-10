@@ -57,10 +57,6 @@ spec:
         volumeMounts:
           - name: cache
             mountPath: /.cache
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
       volumes:
       - name: cache
         emptyDir:
