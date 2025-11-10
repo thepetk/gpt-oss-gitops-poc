@@ -62,10 +62,9 @@ spec:
           capabilities:
             drop: ["ALL"]
       volumes:
-        - name: models
-          persistentVolumeClaim:
-            claimName: gpt-oss-pvc
-            volumes:
-        - name: cache
-          emptyDir:
-            sizeLimit: 10Gi
+      - name: models
+        persistentVolumeClaim:
+          claimName: gpt-oss-pvc
+      - name: cache
+        emptyDir:
+          sizeLimit: 10Gi
