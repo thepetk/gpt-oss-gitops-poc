@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gpt-oss-20b-application
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thepetk/gpt-oss-gitops-poc.git
+    targetRevision: HEAD
+    path: manifests/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gpt-oss
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
