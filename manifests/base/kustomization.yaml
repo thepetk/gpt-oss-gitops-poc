@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gpt-oss
 resources:
   - namespace.yaml
+  - rbac.yaml
   - pvc.yaml
   - deployment.yaml
   - svc.yaml
