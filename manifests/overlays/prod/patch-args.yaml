@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpt-oss-app
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: gpt-oss-app
+  template:
+    spec:
+      containers:
+        - name: vllm
+          args:
+            - "--model=openai/gpt-oss-20b"
+            - "--host=0.0.0.0"
+            - "--port=8000"
+            - "--download-dir=/models"
+            - "--max-model-len=8192"
+            - "--gpu-memory-utilization=0.95"
