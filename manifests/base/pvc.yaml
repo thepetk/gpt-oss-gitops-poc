@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gpt-oss-pvc
+  namespace: gpt-oss
+  labels:
+    app.kubernetes.io/instance: gpt-oss-app
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeModes: Filesystem
+  resources:
+    requests:
+      storage: 80Gi

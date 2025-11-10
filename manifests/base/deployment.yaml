@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: gpt-oss-app
+    app.kubernetes.io/managed-by: kustomize
+  name: gpt-oss-app
+  namespace: gpt-oss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: gpt-oss-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: gpt-oss-app
+    spec:
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        nvidia.com/gpu.present: "true"
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: vllm
+        image: vllm/vllm-openai:gptoss
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: huggingface-token
+              key: token
+        args:
+        - "--model=openai/gpt-oss-20b"
+        - "--host=0.0.0.0"
+        - "--port=8080"
+        - "--download-dir=/models"
+        - "--max-model-len=8192"
+        - "--gpu-memory-utilization=0.95"
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+        volumeMounts:
+        - name: models
+          mountPath: /models
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: models-cache
