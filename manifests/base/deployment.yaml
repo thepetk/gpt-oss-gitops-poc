@@ -34,18 +34,18 @@ spec:
               name: huggingface-token
               key: token
         - name: HF_HOME
-          value: /tmp/huggingface
+          value: /.cache/huggingface
         - name: TRANSFORMERS_CACHE
-          value: /tmp/transformers
+          value: /.cache/transformers
         - name: FLASHINFER_WORKSPACE_DIR
-          value: /tmp/flashinfer
+          value: /.cache/flashinfer
         - name: XDG_CACHE_HOME
-          value: /tmp/.cache
+          value: /.cache/.cache
         args:
         - "--model=openai/gpt-oss-20b"
         - "--host=0.0.0.0"
         - "--port=8080"
-        - "--download-dir=/models"
+        - "--download-dir=/.cache"
         - "--max-model-len=8192"
         - "--gpu-memory-utilization=0.95"
         ports:
@@ -56,15 +56,11 @@ spec:
             nvidia.com/gpu: "1"
         volumeMounts:
           - name: cache
-            mountPath: /tmp
+            mountPath: /.cache
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
-      volumes:
-      - name: models
-        persistentVolumeClaim:
-          claimName: gpt-oss-pvc
       - name: cache
         emptyDir:
           sizeLimit: 10Gi
