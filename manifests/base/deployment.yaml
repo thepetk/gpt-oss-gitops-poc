@@ -61,6 +61,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+      volumes:
       - name: cache
         emptyDir:
           sizeLimit: 10Gi
